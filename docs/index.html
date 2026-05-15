@@ -56,8 +56,8 @@
             <span>runtime LLM calls</span>
           </div>
           <div>
-            <strong>Local</strong>
-            <span>JSON index</span>
+            <strong>BGE-small</strong>
+            <span>local embeddings</span>
           </div>
           <div>
             <strong>CLI + MCP</strong>
@@ -137,7 +137,7 @@ matched catalyst · #architecture
           <article>
             <span class="step">3</span>
             <h3>Precompute links</h3>
-            <p>Catalysts are matched against chunks so query time can reuse stored structure.</p>
+            <p>Catalysts are matched against BGE embeddings so query time can reuse stored structure.</p>
           </article>
           <article>
             <span class="step">4</span>
@@ -159,7 +159,7 @@ matched catalyst · #architecture
           </article>
           <article>
             <strong>No cloud search</strong>
-            <span>Search uses local sparse vectors and a generated index.</span>
+            <span>Search uses local BGE embeddings, sparse fallback vectors, and a generated index.</span>
           </article>
           <article>
             <strong>No cold start</strong>

@@ -8,19 +8,24 @@ import type {
   GardenDocument,
   Vector,
 } from "../types.js";
+import type { Embedder } from "./embeddings.js";
+import { denseCosine } from "./embeddings.js";
 import { entityDisplayName, entityNameFromId, entityTypeFromId } from "./entities.js";
 import { phraseTerms, tokenize, topTerms } from "./text.js";
 import { maxIso, minIso, quarterLabel } from "./time.js";
 import { cosine, vectorizeText } from "./vector.js";
 
-export function buildCatalysts(
+type CatalystDraft = Omit<Catalyst, "embedding" | "topChunks"> & { entityChunkIds: string[] };
+
+export async function buildCatalysts(
   entities: EntitySummary[],
   documents: GardenDocument[],
   chunks: GardenChunk[],
   idf: Vector,
-): Catalyst[] {
+  embedder: Embedder,
+): Promise<Catalyst[]> {
   const documentById = new Map(documents.map((document) => [document.id, document]));
-  const catalysts: Catalyst[] = [];
+  const drafts: CatalystDraft[] = [];
 
   for (const entity of entities) {
     const entityChunks = chunks.filter((chunk) => chunk.entities.includes(entity.id));
@@ -45,14 +50,9 @@ export function buildCatalysts(
 
     for (const text of candidates) {
       const vector = vectorizeText(`${displayName} ${text} ${terms.join(" ")}`, idf);
-      const topChunks = entityChunks
-        .map((chunk) => ({ chunkId: chunk.id, score: cosine(vector, chunk.vector) }))
-        .filter((match) => match.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 24);
-
-      catalysts.push({
+      drafts.push({
         context: terms.slice(0, 5).join(" / "),
+        entityChunkIds: entityChunks.map((chunk) => chunk.id),
         entityId: entity.id,
         entityName: entity.name,
         entityType: entity.type,
@@ -60,24 +60,56 @@ export function buildCatalysts(
         id: catalystId(entity.id, text),
         terms,
         text,
-        topChunks,
         vector,
       });
     }
   }
 
-  return catalysts;
+  const embeddings = await embedder.embedQueries(
+    drafts.map((draft) => `${draft.entityName} ${draft.text} ${draft.terms.join(" ")}`),
+  );
+  const chunkById = new Map(chunks.map((chunk) => [chunk.id, chunk]));
+
+  return drafts.map((draft, index) => {
+    const embedding = embeddings[index] ?? [];
+    const entityChunks = draft.entityChunkIds
+      .map((chunkId) => chunkById.get(chunkId))
+      .filter((chunk): chunk is GardenChunk => Boolean(chunk));
+
+    return {
+      ...withoutEntityChunkIds(draft),
+      embedding,
+      topChunks: topChunksForCatalyst({ ...withoutEntityChunkIds(draft), embedding }, entityChunks),
+    };
+  });
 }
 
 export function refreshCatalystTopChunks(catalysts: Catalyst[], chunks: GardenChunk[]): Catalyst[] {
   return catalysts.map((catalyst) => ({
     ...catalyst,
-    topChunks: chunks
-      .map((chunk) => ({ chunkId: chunk.id, score: cosine(catalyst.vector, chunk.vector) }))
-      .filter((match) => match.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 32),
+    topChunks: topChunksForCatalyst(catalyst, chunks, 32),
   }));
+}
+
+function topChunksForCatalyst(
+  catalyst: Pick<Catalyst, "embedding" | "vector">,
+  chunks: GardenChunk[],
+  limit = 24,
+): Array<{ chunkId: string; score: number }> {
+  return chunks
+    .map((chunk) => ({
+      chunkId: chunk.id,
+      score: denseCosine(catalyst.embedding, chunk.embedding) || cosine(catalyst.vector, chunk.vector),
+    }))
+    .filter((match) => match.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+}
+
+function withoutEntityChunkIds(draft: CatalystDraft): Omit<Catalyst, "embedding" | "topChunks"> {
+  const { entityChunkIds, ...catalyst } = draft;
+  void entityChunkIds;
+  return catalyst;
 }
 
 function pickTerms(text: string, seedTerms: string[]): string[] {

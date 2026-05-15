@@ -4,6 +4,7 @@ import { Command } from "commander";
 
 import { applyCorpus, indexVault, installAgentInstructions, loadIndex, runMcpServer } from "./index.js";
 import type { AgentName } from "./core/agents.js";
+import { isEmbeddingBackend } from "./core/embeddings.js";
 import { formatPetri, formatSearchResults, petri, catalyze } from "./core/search.js";
 
 const program = new Command();
@@ -11,27 +12,48 @@ const program = new Command();
 program
   .name("cofactor")
   .description("Local-first catalytic memory for Markdown corpora and AI agents.")
-  .version("0.1.0");
+  .version("0.1.1");
 
 program
   .command("init")
   .argument("[vault]", "Markdown corpus to index", process.cwd())
+  .option("--embedding-backend <backend>", "embedding backend: transformers or hash", embeddingBackendOption)
+  .option("--embedding-batch-size <count>", "embedding batch size", integerOption)
+  .option("--embedding-model <model>", "Transformers.js feature-extraction model")
   .option("--max-files <count>", "maximum files to index", integerOption)
   .option("--json", "print machine-readable output")
   .description("Scan a corpus and write .cofactor/index.json.")
-  .action(async (vault: string, options: { json?: boolean; maxFiles?: number }) => {
-    const index = await indexVault(vault, {
-      config: options.maxFiles ? { maxFiles: options.maxFiles } : undefined,
-    });
-    print(
-      {
-        generatedAt: index.generatedAt,
-        path: index.vaultPath,
-        stats: index.stats,
+  .action(
+    async (
+      vault: string,
+      options: {
+        embeddingBackend?: "transformers" | "hash";
+        embeddingBatchSize?: number;
+        embeddingModel?: string;
+        json?: boolean;
+        maxFiles?: number;
       },
-      options.json,
-    );
-  });
+    ) => {
+      const config = {
+        ...(options.embeddingBackend ? { embeddingBackend: options.embeddingBackend } : {}),
+        ...(options.embeddingBatchSize ? { embeddingBatchSize: options.embeddingBatchSize } : {}),
+        ...(options.embeddingModel ? { embeddingModel: options.embeddingModel } : {}),
+        ...(options.maxFiles ? { maxFiles: options.maxFiles } : {}),
+      };
+      const index = await indexVault(vault, {
+        config,
+      });
+      print(
+        {
+          embedding: index.embedding,
+          generatedAt: index.generatedAt,
+          path: index.vaultPath,
+          stats: index.stats,
+        },
+        options.json,
+      );
+    },
+  );
 
 program
   .command("refresh")
@@ -167,6 +189,14 @@ function integerOption(value: string): number {
   }
 
   return parsed;
+}
+
+function embeddingBackendOption(value: string): "transformers" | "hash" {
+  if (!isEmbeddingBackend(value)) {
+    throw new Error(`Expected embedding backend "transformers" or "hash", received "${value}"`);
+  }
+
+  return value;
 }
 
 function print(value: unknown, json?: boolean): void {

@@ -2,6 +2,13 @@ import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
+import type { IndexConfig } from "../src/types.js";
+
+export const testConfig = {
+  embeddingBackend: "hash",
+  embeddingBatchSize: 8,
+} satisfies Partial<IndexConfig>;
+
 export async function tempDir(name: string): Promise<string> {
   return fs.mkdtemp(path.join(os.tmpdir(), `cofactor-${name}-`));
 }

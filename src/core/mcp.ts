@@ -7,7 +7,7 @@ import { catalyze, petri } from "./search.js";
 export async function runMcpServer(defaultVaultPath = process.cwd()): Promise<void> {
   const server = new McpServer({
     name: "cofactor",
-    version: "0.1.0",
+    version: "0.1.1",
   });
 
   server.registerTool(

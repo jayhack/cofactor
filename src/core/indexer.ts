@@ -10,6 +10,7 @@ import type {
 } from "../types.js";
 import { buildCatalysts } from "./catalysts.js";
 import { discoverDocuments } from "./discover.js";
+import { createEmbedder } from "./embeddings.js";
 import { INDEX_VERSION, mergeConfig } from "./defaults.js";
 import { entityNameFromId, entityTypeFromId } from "./entities.js";
 import { chunkByWords, tokenize, topTerms } from "./text.js";
@@ -28,12 +29,17 @@ export async function createIndex(
   const chunkShells = documents.flatMap((document) => documentChunks(document, config));
   const tokenSets = chunkShells.map((chunk) => chunk.tokens);
   const idf = buildIdf(tokenSets);
-  const chunks = chunkShells.map((chunk) => ({
+  const embedder = await createEmbedder(config);
+  const chunkEmbeddings = await embedder.embedDocuments(
+    chunkShells.map((chunk) => `${chunk.title}\n\n${chunk.content}`),
+  );
+  const chunks = chunkShells.map((chunk, index) => ({
     ...chunk,
+    embedding: chunkEmbeddings[index] ?? [],
     vector: vectorizeTokens(chunk.tokens, idf),
   }));
   const entities = selectEntities(documents, chunks, idf, config.selectedEntityLimit);
-  const catalysts = buildCatalysts(entities, documents, chunks, idf);
+  const catalysts = await buildCatalysts(entities, documents, chunks, idf, embedder);
   const entityCatalystIds = new Map<string, string[]>();
   for (const catalyst of catalysts) {
     const list = entityCatalystIds.get(catalyst.entityId) ?? [];
@@ -47,6 +53,7 @@ export async function createIndex(
     chunks,
     config,
     documents,
+    embedding: embedder.metadata,
     entities: entities.map((entity) => ({
       ...entity,
       catalystIds: entityCatalystIds.get(entity.id) ?? [],
@@ -59,6 +66,7 @@ export async function createIndex(
       catalystCount: catalysts.length,
       chunkCount: chunks.length,
       documentCount: documents.length,
+      embeddingDimensions: embedder.metadata.dimensions,
       entityCount: entities.length,
     },
     targetPath: kind === "target" ? root : undefined,
@@ -70,7 +78,7 @@ export async function createIndex(
 function documentChunks(
   document: GardenDocument,
   config: ReturnType<typeof mergeConfig>,
-): Array<Omit<GardenChunk, "vector">> {
+): Array<Omit<GardenChunk, "embedding" | "vector">> {
   return chunkByWords(document.content, config.chunkSizeWords, config.chunkOverlapWords).map(
     (content, ordinal) => ({
       content,

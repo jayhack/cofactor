@@ -1,6 +1,6 @@
 {
   "name": "cofactor-memory",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local-first catalytic memory for Markdown corpora and AI agents.",
   "type": "module",
   "license": "MIT",
@@ -46,6 +46,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "commander": "^14.0.2",
     "zod": "^4.4.3"

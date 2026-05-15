@@ -1,6 +1,6 @@
 # Cofactor
 
-Cofactor is a local-first memory index for Markdown corpora and AI agents. It scans notes, extracts structural signals, precomputes catalyst-style questions, and searches documents through those questions without sending private text to a model at query time.
+Cofactor is a local-first memory index for Markdown corpora and AI agents. It scans notes, extracts structural signals, embeds documents with a local Hugging Face model, precomputes catalyst-style questions, and searches documents through those questions without sending private text to a model at query time.
 
 Landing page: [Cofactor](https://jayhack.github.io/cofactor/)
 
@@ -62,9 +62,12 @@ Cofactor extracts local structure from Markdown, MDX, and text files:
 
 - frontmatter tags, inline hashtags, folders, and wiki links
 - creation/update timestamps from frontmatter or file metadata
-- document chunks and sparse TF-IDF vectors
+- document chunks embedded with `Xenova/bge-small-en-v1.5` by default
+- sparse TF-IDF vectors as a lightweight lexical fallback
 - deterministic catalyst-style questions for each salient entity
 - precomputed question-to-document links
+
+The default embedding backend uses Transformers.js and downloads ONNX model weights on first use, then reuses the local Hugging Face cache. For CI or fully deterministic tests, use `--embedding-backend hash`.
 
 The index is stored under `.cofactor/` in the corpus root. Add that directory to `.gitignore` unless you intentionally want to version the generated memory.
 

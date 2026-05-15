@@ -2,6 +2,10 @@ import type { IndexConfig } from "../types.js";
 
 export const INDEX_VERSION = "0.1";
 
+export const DEFAULT_EMBEDDING_MODEL = "Xenova/bge-small-en-v1.5";
+
+export const DEFAULT_QUERY_PREFIX = "Represent this sentence for searching relevant passages: ";
+
 export const STORE_DIR = ".cofactor";
 
 export const INDEX_FILE = "index.json";
@@ -13,6 +17,11 @@ export const TARGETS_DIR = "targets";
 export const defaultConfig: IndexConfig = {
   chunkOverlapWords: 48,
   chunkSizeWords: 260,
+  embeddingBackend: "transformers",
+  embeddingBatchSize: 16,
+  embeddingModel: DEFAULT_EMBEDDING_MODEL,
+  embeddingPassagePrefix: "",
+  embeddingQueryPrefix: DEFAULT_QUERY_PREFIX,
   excludedDirs: [
     ".git",
     ".hg",

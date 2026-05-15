@@ -4,9 +4,27 @@ export type ActivityTrend = "rising" | "active" | "stable" | "dormant";
 
 export type Vector = Record<string, number>;
 
+export type DenseVector = number[];
+
+export type EmbeddingBackend = "transformers" | "hash";
+
+export interface EmbeddingMetadata {
+  backend: EmbeddingBackend;
+  dimensions: number;
+  model: string;
+  normalize: boolean;
+  passagePrefix: string;
+  queryPrefix: string;
+}
+
 export interface IndexConfig {
   chunkOverlapWords: number;
   chunkSizeWords: number;
+  embeddingBackend: EmbeddingBackend;
+  embeddingBatchSize: number;
+  embeddingModel: string;
+  embeddingPassagePrefix: string;
+  embeddingQueryPrefix: string;
   excludedDirs: string[];
   extensions: string[];
   maxFiles: number;
@@ -43,6 +61,7 @@ export interface GardenChunk {
   entities: string[];
   filePath: string;
   id: string;
+  embedding: DenseVector;
   modifiedAt: string;
   ordinal: number;
   relativePath: string;
@@ -73,6 +92,7 @@ export interface Catalyst {
   entityType: EntityType;
   era: string;
   id: string;
+  embedding: DenseVector;
   terms: string[];
   text: string;
   topChunks: Array<{ chunkId: string; score: number }>;
@@ -91,6 +111,7 @@ export interface IndexStats {
   catalystCount: number;
   chunkCount: number;
   documentCount: number;
+  embeddingDimensions: number;
   entityCount: number;
 }
 
@@ -100,6 +121,7 @@ export interface GardenIndex {
   chunks: GardenChunk[];
   config: IndexConfig;
   documents: GardenDocument[];
+  embedding: EmbeddingMetadata;
   entities: EntitySummary[];
   generatedAt: string;
   idf: Vector;

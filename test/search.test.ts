@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import { catalyze, indexVault } from "../src/index.js";
-import { seedVault, tempDir } from "./helpers.js";
+import { seedVault, tempDir, testConfig } from "./helpers.js";
 
 describe("catalyze", () => {
   it("returns relevant notes with contributing catalyst ids", async () => {
     const root = await tempDir("search");
     await seedVault(root);
-    await indexVault(root);
+    await indexVault(root, { config: testConfig });
 
     const response = await catalyze("why did auth change direction around rollback and trust?", {
       limit: 2,

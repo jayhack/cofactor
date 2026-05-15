@@ -2,7 +2,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { applyCorpus, catalyze, indexVault, loadIndex } from "../src/index.js";
-import { seedVault, tempDir, writeNote } from "./helpers.js";
+import { seedVault, tempDir, testConfig, writeNote } from "./helpers.js";
 
 describe("applyCorpus", () => {
   it("projects source catalysts onto an external corpus", async () => {
@@ -21,7 +21,7 @@ The migration plan focuses on session recovery, audit log coverage, and rollback
 `,
     );
 
-    await indexVault(source);
+    await indexVault(source, { config: testConfig });
     const applied = await applyCorpus(source, target);
     const refreshed = await loadIndex(source);
     const response = await catalyze("session recovery rollback ownership", {
