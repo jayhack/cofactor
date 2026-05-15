@@ -1,7 +1,7 @@
 node_modules/
 dist/
 coverage/
-.enzyme-garden/
+.cofactor/
 .DS_Store
 npm-debug.log*
 test-output/

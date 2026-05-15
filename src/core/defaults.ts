@@ -2,7 +2,7 @@ import type { IndexConfig } from "../types.js";
 
 export const INDEX_VERSION = "0.1";
 
-export const STORE_DIR = ".enzyme-garden";
+export const STORE_DIR = ".cofactor";
 
 export const INDEX_FILE = "index.json";
 
@@ -17,7 +17,7 @@ export const defaultConfig: IndexConfig = {
     ".git",
     ".hg",
     ".svn",
-    ".enzyme-garden",
+    ".cofactor",
     ".obsidian",
     ".trash",
     ".venv",

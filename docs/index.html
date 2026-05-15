@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cofactor · Local-first memory for Markdown agents</title>
+    <meta
+      name="description"
+      content="Cofactor is a local-first compile step for Markdown knowledge bases, available as the cofactor-memory npm package."
+    />
+    <meta property="og:title" content="Cofactor" />
+    <meta
+      property="og:description"
+      content="Turn Markdown notes into catalyst-style questions your agent can search locally."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Cofactor home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>Cofactor</span>
+      </a>
+      <nav>
+        <a href="#compile">How it works</a>
+        <a href="#cli">CLI</a>
+        <a href="#agents">Agents</a>
+        <a href="https://github.com/jayhack/cofactor">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <canvas id="signal-field" aria-hidden="true"></canvas>
+        <div class="hero-copy">
+          <p class="eyebrow">A cofactor for agent memory</p>
+          <h1 id="hero-title">Cofactor</h1>
+          <p class="hero-lede">
+            Compile your Markdown vault into a local concept graph. Tags, folders, links, and
+            timestamps become catalyst-style questions your agent can search before the first
+            conversation.
+          </p>
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button primary" href="#cli">Install</a>
+            <a class="button secondary" href="https://github.com/jayhack/cofactor">View repo</a>
+          </div>
+          <div class="install-line" aria-label="Install command">
+            <span>$</span>
+            <code>npm install -g cofactor-memory</code>
+          </div>
+        </div>
+        <div class="hero-metrics" aria-label="Product claims">
+          <div>
+            <strong>0</strong>
+            <span>runtime LLM calls</span>
+          </div>
+          <div>
+            <strong>Local</strong>
+            <span>JSON index</span>
+          </div>
+          <div>
+            <strong>CLI + MCP</strong>
+            <span>agent-ready</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="intro-band">
+        <div class="section-grid">
+          <div>
+            <p class="eyebrow">Most memory layers start empty</p>
+            <h2>Cofactor starts with what you already wrote.</h2>
+          </div>
+          <p>
+            Your notes already have structure: repeated tags, dormant links, folders that carry
+            projects, and timestamps that show when ideas changed. Cofactor reads those signals and
+            gives agents a retrieval layer grounded in the shape of your archive.
+          </p>
+        </div>
+        <div class="note-river" aria-label="Example notes flowing into a concept graph">
+          <span>#product-decisions</span>
+          <span>[[Auth Rewrite]]</span>
+          <span>folder:research</span>
+          <span>#user-trust</span>
+          <span>2025 Q4</span>
+          <span>folder:meeting-notes</span>
+        </div>
+      </section>
+
+      <section class="setup" id="cli" aria-labelledby="setup-title">
+        <div class="section-heading">
+          <p class="eyebrow">Setup</p>
+          <h2 id="setup-title">Point it at a folder.</h2>
+        </div>
+        <div class="terminal" role="img" aria-label="Terminal showing Cofactor setup">
+          <div class="terminal-bar">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <pre><code>$ cd ~/notes
+$ cofactor init
+
+Indexed: 384 documents
+Entities: 42 tags, links, and folders
+Catalysts: 168 generated locally
+Chunks: 611 searchable passages
+
+$ cofactor catalyze "why did auth change direction?"
+
+matched catalyst · #architecture
+"Where does session recovery keep colliding with shipping pressure?"
+
+→ retros/platform-auth.md
+→ adrs/session-boundary.md
+→ interviews/user-12.md</code></pre>
+        </div>
+      </section>
+
+      <section class="compile" id="compile" aria-labelledby="compile-title">
+        <div class="section-heading">
+          <p class="eyebrow">Compile step</p>
+          <h2 id="compile-title">Search through questions, not just words.</h2>
+        </div>
+        <div class="pipeline">
+          <article>
+            <span class="step">1</span>
+            <h3>Extract entities</h3>
+            <p>Frontmatter tags, inline hashtags, wiki links, folders, and dates become signals.</p>
+          </article>
+          <article>
+            <span class="step">2</span>
+            <h3>Generate catalysts</h3>
+            <p>Each salient entity gets thematic questions built from local terms and activity.</p>
+          </article>
+          <article>
+            <span class="step">3</span>
+            <h3>Precompute links</h3>
+            <p>Catalysts are matched against chunks so query time can reuse stored structure.</p>
+          </article>
+          <article>
+            <span class="step">4</span>
+            <h3>Retrieve context</h3>
+            <p>Your agent asks a question and receives excerpts, catalyst IDs, and file paths.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="claim-band" aria-labelledby="claims-title">
+        <div>
+          <p class="eyebrow">Local by default</p>
+          <h2 id="claims-title">Fast enough for every agent session. Private enough for real notes.</h2>
+        </div>
+        <div class="claim-grid">
+          <article>
+            <strong>No account</strong>
+            <span>Install from npm and index folders on your machine.</span>
+          </article>
+          <article>
+            <strong>No cloud search</strong>
+            <span>Search uses local sparse vectors and a generated index.</span>
+          </article>
+          <article>
+            <strong>No cold start</strong>
+            <span>The first prompt can use the same compiled context as the hundredth.</span>
+          </article>
+          <article>
+            <strong>No lock-in</strong>
+            <span>The index is readable JSON, and the source is TypeScript.</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="use-cases" aria-labelledby="use-title">
+        <div class="section-heading">
+          <p class="eyebrow">Bring a corpus</p>
+          <h2 id="use-title">Use accumulated writing as the agent’s memory layer.</h2>
+        </div>
+        <div class="case-grid">
+          <article>
+            <h3>Engineering notes</h3>
+            <p>ADRs, retros, incident reviews, and planning docs become searchable context.</p>
+          </article>
+          <article>
+            <h3>Reading archives</h3>
+            <p>Highlights and research notes surface recurring tastes, tensions, and questions.</p>
+          </article>
+          <article>
+            <h3>Design exploration</h3>
+            <p>Chosen and rejected options reveal the constraints a user keeps returning to.</p>
+          </article>
+          <article>
+            <h3>Team onboarding</h3>
+            <p>Apply a team’s catalysts to docs, transcripts, and unfamiliar project material.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="agents" id="agents" aria-labelledby="agents-title">
+        <div>
+          <p class="eyebrow">Agents</p>
+          <h2 id="agents-title">Works from the shell, SDK, or MCP.</h2>
+          <p>
+            Cofactor is available as the <code>cofactor-memory</code> package. Use the CLI directly,
+            import the TypeScript SDK, or run the included stdio MCP server for clients that speak
+            Model Context Protocol.
+          </p>
+        </div>
+        <div class="command-stack" aria-label="Agent integration commands">
+          <code>cofactor agents codex .</code>
+          <code>cofactor agents claude .</code>
+          <code>cofactor mcp ./notes</code>
+        </div>
+      </section>
+
+      <section class="cta" aria-labelledby="cta-title">
+        <p class="eyebrow">Try it on your own vault</p>
+        <h2 id="cta-title">Give your agent the shape of your notes.</h2>
+        <a class="button primary" href="https://github.com/jayhack/cofactor">Get Cofactor</a>
+      </section>
+    </main>
+
+    <footer>
+      <span>Cofactor · local memory for Markdown agents</span>
+      <a href="https://www.npmjs.com/package/cofactor-memory">npm</a>
+      <a href="https://github.com/jayhack/cofactor">GitHub</a>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

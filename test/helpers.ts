@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 
 export async function tempDir(name: string): Promise<string> {
-  return fs.mkdtemp(path.join(os.tmpdir(), `enzyme-garden-${name}-`));
+  return fs.mkdtemp(path.join(os.tmpdir(), `cofactor-${name}-`));
 }
 
 export async function writeNote(root: string, relativePath: string, content: string): Promise<void> {

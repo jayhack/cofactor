@@ -9,7 +9,7 @@ import { formatPetri, formatSearchResults, petri, catalyze } from "./core/search
 const program = new Command();
 
 program
-  .name("enzyme-garden")
+  .name("cofactor")
   .description("Local-first catalytic memory for Markdown corpora and AI agents.")
   .version("0.1.0");
 
@@ -18,7 +18,7 @@ program
   .argument("[vault]", "Markdown corpus to index", process.cwd())
   .option("--max-files <count>", "maximum files to index", integerOption)
   .option("--json", "print machine-readable output")
-  .description("Scan a corpus and write .enzyme-garden/index.json.")
+  .description("Scan a corpus and write .cofactor/index.json.")
   .action(async (vault: string, options: { json?: boolean; maxFiles?: number }) => {
     const index = await indexVault(vault, {
       config: options.maxFiles ? { maxFiles: options.maxFiles } : undefined,
@@ -117,7 +117,7 @@ program
   .argument("<agent>", "codex or claude")
   .argument("[vault]", "repository/corpus root", process.cwd())
   .option("--json", "print machine-readable output")
-  .description("Install agent instructions that teach tools to call enzyme-garden.")
+  .description("Install agent instructions that teach tools to call cofactor.")
   .action(async (agent: string, vault: string, options: { json?: boolean }) => {
     if (agent !== "codex" && agent !== "claude") {
       throw new Error(`Unsupported agent "${agent}". Expected "codex" or "claude".`);
@@ -139,7 +139,7 @@ program
   .command("status")
   .argument("[vault]", "indexed corpus", process.cwd())
   .option("--json", "print machine-readable output")
-  .description("Report whether the corpus has an Enzyme Garden index.")
+  .description("Report whether the corpus has a Cofactor index.")
   .action(async (vault: string, options: { json?: boolean }) => {
     const index = await loadIndex(vault);
     print(
@@ -156,7 +156,7 @@ program
 
 program.parseAsync().catch((error: unknown) => {
   const message = error instanceof Error ? error.message : String(error);
-  console.error(`enzyme-garden: ${message}`);
+  console.error(`cofactor: ${message}`);
   process.exitCode = 1;
 });
 

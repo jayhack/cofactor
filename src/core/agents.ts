@@ -5,8 +5,8 @@ import { STORE_DIR } from "./defaults.js";
 
 export type AgentName = "codex" | "claude";
 
-const startMarker = "<!-- enzyme-garden:start -->";
-const endMarker = "<!-- enzyme-garden:end -->";
+const startMarker = "<!-- cofactor:start -->";
+const endMarker = "<!-- cofactor:end -->";
 
 export async function installAgentInstructions(
   vaultPathInput: string,
@@ -20,7 +20,7 @@ export async function installAgentInstructions(
     await upsertBlock(agentsFile, codexBlock());
     files.push(agentsFile);
 
-    const skillDir = path.join(vaultPath, ".agents", "skills", "enzyme-garden");
+    const skillDir = path.join(vaultPath, ".agents", "skills", "cofactor");
     await fs.mkdir(skillDir, { recursive: true });
     const skillFile = path.join(skillDir, "SKILL.md");
     await fs.writeFile(skillFile, codexSkill());
@@ -54,27 +54,27 @@ async function upsertBlock(filePath: string, block: string): Promise<void> {
 
 function codexBlock(): string {
   return `
-## Enzyme Garden Memory
+## Cofactor Memory
 
-Use \`enzyme-garden petri --json\` before broad research or implementation work in this repository to load the local knowledge graph. Use \`enzyme-garden catalyze "<question>" --json\` when the current task needs relevant notes, decisions, or cross-corpus context. The same tools are exposed over stdio with \`enzyme-garden mcp\`. The index lives in \`${STORE_DIR}/\`; refresh it with \`enzyme-garden init\` after substantial note changes.
+Use \`cofactor petri --json\` before broad research or implementation work in this repository to load the local knowledge graph. Use \`cofactor catalyze "<question>" --json\` when the current task needs relevant notes, decisions, or cross-corpus context. The same tools are exposed over stdio with \`cofactor mcp\`. The index lives in \`${STORE_DIR}/\`; refresh it with \`cofactor init\` after substantial note changes.
 `;
 }
 
 function claudeBlock(): string {
   return `
-## Enzyme Garden Memory
+## Cofactor Memory
 
-Before broad reasoning tasks, run \`enzyme-garden petri --json\` to inspect local entities and catalysts. For a specific question, run \`enzyme-garden catalyze "<question>" --json\` and use the returned catalysts plus documents as working memory. Claude Desktop can also run \`enzyme-garden mcp\` as a stdio MCP server. Refresh the index with \`enzyme-garden init\` when notes change.
+Before broad reasoning tasks, run \`cofactor petri --json\` to inspect local entities and catalysts. For a specific question, run \`cofactor catalyze "<question>" --json\` and use the returned catalysts plus documents as working memory. Claude Desktop can also run \`cofactor mcp\` as a stdio MCP server. Refresh the index with \`cofactor init\` when notes change.
 `;
 }
 
 function codexSkill(): string {
   return `---
-name: enzyme-garden
-description: Use local Enzyme Garden memory before repository research, planning, or implementation tasks.
+name: cofactor
+description: Use local Cofactor memory before repository research, planning, or implementation tasks.
 ---
 
-Run \`enzyme-garden petri --json\` to inspect indexed entities and catalysts for the current repository. Run \`enzyme-garden catalyze "<question>" --json\` to retrieve the most relevant indexed notes for a specific task. Use \`enzyme-garden mcp\` when a client supports Model Context Protocol tools over stdio.
+Run \`cofactor petri --json\` to inspect indexed entities and catalysts for the current repository. Run \`cofactor catalyze "<question>" --json\` to retrieve the most relevant indexed notes for a specific task. Use \`cofactor mcp\` when a client supports Model Context Protocol tools over stdio.
 `;
 }
 

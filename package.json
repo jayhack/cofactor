@@ -1,5 +1,5 @@
 {
-  "name": "enzyme-garden",
+  "name": "cofactor-memory",
   "version": "0.1.0",
   "description": "Local-first catalytic memory for Markdown corpora and AI agents.",
   "type": "module",
@@ -7,12 +7,12 @@
   "author": "jayhack",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jayhack/enzyme-garden.git"
+    "url": "git+https://github.com/jayhack/cofactor.git"
   },
   "bugs": {
-    "url": "https://github.com/jayhack/enzyme-garden/issues"
+    "url": "https://github.com/jayhack/cofactor/issues"
   },
-  "homepage": "https://github.com/jayhack/enzyme-garden#readme",
+  "homepage": "https://jayhack.github.io/cofactor/",
   "keywords": [
     "agents",
     "ai",
@@ -24,8 +24,7 @@
     "semantic-search"
   ],
   "bin": {
-    "enzyme-garden": "dist/cli.js",
-    "egarden": "dist/cli.js"
+    "cofactor": "dist/cli.js"
   },
   "files": [
     "dist",
@@ -37,7 +36,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "clean": "rm -rf dist coverage .enzyme-garden test-output",
+    "clean": "rm -rf dist coverage .cofactor test-output",
     "dev": "tsx src/cli.ts",
     "format": "prettier --write .",
     "lint": "eslint .",

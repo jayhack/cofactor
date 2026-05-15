@@ -6,7 +6,7 @@ import { catalyze, petri } from "./search.js";
 
 export async function runMcpServer(defaultVaultPath = process.cwd()): Promise<void> {
   const server = new McpServer({
-    name: "enzyme-garden",
+    name: "cofactor",
     version: "0.1.0",
   });
 
@@ -14,7 +14,7 @@ export async function runMcpServer(defaultVaultPath = process.cwd()): Promise<vo
     "petri",
     {
       description:
-        "Inspect the local Enzyme Garden entity/catalyst graph for working memory before broad reasoning tasks.",
+        "Inspect the local Cofactor entity/catalyst graph for working memory before broad reasoning tasks.",
       inputSchema: {
         query: z.string().optional().describe("Optional query for narrowing entities and catalysts."),
         vaultPath: z.string().optional().describe("Path to the indexed vault. Defaults to the server cwd."),

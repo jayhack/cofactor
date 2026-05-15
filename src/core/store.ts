@@ -55,7 +55,7 @@ export async function readTargetIndex(vaultPath: string, target: string): Promis
   const baseIndex = await readIndex(vaultPath);
   const appliedTarget = resolveAppliedTarget(baseIndex.appliedTargets, target);
   if (!appliedTarget) {
-    throw new Error(`No applied target matches "${target}". Run enzyme-garden apply ${target} first.`);
+    throw new Error(`No applied target matches "${target}". Run cofactor apply ${target} first.`);
   }
 
   const raw = await fs.readFile(appliedTarget.indexPath, "utf8");

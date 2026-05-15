@@ -1,19 +1,19 @@
-# enzyme-garden
+# Cofactor
 
-`enzyme-garden` is a local-first memory index for Markdown corpora and AI agents. It scans notes, extracts structural signals, precomputes catalyst questions, and searches documents through those catalysts without sending private text to a model at query time.
+Cofactor is a local-first memory index for Markdown corpora and AI agents. It scans notes, extracts structural signals, precomputes catalyst-style questions, and searches documents through those questions without sending private text to a model at query time.
 
-This package is an independent JavaScript/TypeScript implementation inspired by the public behavior of [enzyme.garden](https://www.enzyme.garden/). It is not the original Enzyme CLI.
+Landing page: [Cofactor](https://jayhack.github.io/cofactor/)
 
 ## Install
 
 ```sh
-npm install -g enzyme-garden
+npm install -g cofactor-memory
 ```
 
 For one-off use:
 
 ```sh
-npx enzyme-garden init ./notes
+npx cofactor-memory init ./notes
 ```
 
 ## CLI
@@ -21,57 +21,57 @@ npx enzyme-garden init ./notes
 Index a Markdown corpus:
 
 ```sh
-enzyme-garden init ./notes
+cofactor init ./notes
 ```
 
 Inspect the local petri dish of entities and catalysts:
 
 ```sh
-enzyme-garden petri ./notes --json
+cofactor petri ./notes --json
 ```
 
 Ask a search question:
 
 ```sh
-enzyme-garden catalyze "why did auth change direction around rollback?" --vault ./notes --json
+cofactor catalyze "why did auth change direction around rollback?" --vault ./notes --json
 ```
 
 Apply one corpus's catalysts to another local corpus:
 
 ```sh
-enzyme-garden apply ../project-docs --vault ./notes
-enzyme-garden catalyze "session recovery tradeoffs" --vault ./notes --target project-docs --json
+cofactor apply ../project-docs --vault ./notes
+cofactor catalyze "session recovery tradeoffs" --vault ./notes --target project-docs --json
 ```
 
 Install agent instructions:
 
 ```sh
-enzyme-garden agents codex .
-enzyme-garden agents claude .
+cofactor agents codex .
+cofactor agents claude .
 ```
 
 Run an MCP stdio server:
 
 ```sh
-enzyme-garden mcp ./notes
+cofactor mcp ./notes
 ```
 
 ## What It Indexes
 
-`enzyme-garden` extracts local structure from Markdown, MDX, and text files:
+Cofactor extracts local structure from Markdown, MDX, and text files:
 
 - frontmatter tags, inline hashtags, folders, and wiki links
 - creation/update timestamps from frontmatter or file metadata
 - document chunks and sparse TF-IDF vectors
-- deterministic catalyst questions for each salient entity
-- precomputed catalyst-to-document links
+- deterministic catalyst-style questions for each salient entity
+- precomputed question-to-document links
 
-The index is stored under `.enzyme-garden/` in the corpus root. Add that directory to `.gitignore` unless you intentionally want to version the generated memory.
+The index is stored under `.cofactor/` in the corpus root. Add that directory to `.gitignore` unless you intentionally want to version the generated memory.
 
 ## SDK
 
 ```ts
-import { catalyze, indexVault, petri } from "enzyme-garden";
+import { catalyze, indexVault, petri } from "cofactor-memory";
 
 await indexVault("./notes");
 
@@ -89,7 +89,7 @@ console.log(results.results);
 
 | Command | Purpose |
 | --- | --- |
-| `init [vault]` | scan a corpus and write `.enzyme-garden/index.json` |
+| `init [vault]` | scan a corpus and write `.cofactor/index.json` |
 | `refresh [vault]` | alias for `init` |
 | `petri [vault]` | print entity and catalyst working memory |
 | `catalyze <query>` | search through catalysts and return relevant notes |
@@ -109,4 +109,4 @@ npm run build
 npm publish --dry-run
 ```
 
-Publishing will require an npm account with permission to publish `enzyme-garden`.
+Publishing will require an npm account with permission to publish `cofactor-memory`.

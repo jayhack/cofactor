@@ -10,10 +10,10 @@ describe("installAgentInstructions", () => {
     await installAgentInstructions(root, "codex");
     await installAgentInstructions(root, "codex");
     const agents = await readText(root, "AGENTS.md");
-    const skill = await readText(root, ".agents/skills/enzyme-garden/SKILL.md");
+    const skill = await readText(root, ".agents/skills/cofactor/SKILL.md");
 
-    expect((agents.match(/enzyme-garden:start/g) ?? []).length).toBe(1);
-    expect(agents).toContain("enzyme-garden petri");
-    expect(skill).toContain("enzyme-garden catalyze");
+    expect((agents.match(/cofactor:start/g) ?? []).length).toBe(1);
+    expect(agents).toContain("cofactor petri");
+    expect(skill).toContain("cofactor catalyze");
   });
 });

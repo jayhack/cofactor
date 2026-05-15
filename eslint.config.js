@@ -5,7 +5,7 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ["dist", "coverage", "node_modules", ".enzyme-garden"],
+    ignores: ["dist", "coverage", "node_modules", ".cofactor"],
   },
   {
     files: ["**/*.ts"],
